@@ -3,93 +3,1033 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Voz Diamantina - Periódico Escolar</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Misión Diamantina - La Voz Diamantina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: #131b2e;
+      --primary: #10b981;
+      --primary-glow: rgba(16, 185, 129, 0.4);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.4);
+      --gold: #f59e0b;
+      --purple: #8b5cf6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* BARRA HUD DE JUEGO (ARRIBA) */
+    .game-hud {
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 20px;
+    }
+
+    .hud-container {
+      max-width: 650px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .xp-counter {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+
+    /* PESTAÑAS TIPO BOTÓN ARCADE */
+    .tabs-wrapper {
+      max-width: 650px;
+      margin: 20px auto 10px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .tab-btn {
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 20px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 10px 16px;
+    }
+
+    /* PANTALLA DE INICIO (BIENVENIDA) */
+    .hero-box {
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 35px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    /* BOTONES ESTILO VIDEOJUEGO (CON VOLUMEN 3D) */
+    .btn-3d {
+      width: 100%;
+      background: #10b981;
+      color: #042f20;
+      border: none;
+      font-size: 1.15rem;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      padding: 18px 24px;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #047857, 0 10px 20px var(--primary-glow);
+      transition: all 0.15s ease-in-out;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #047857, 0 5px 10px var(--primary-glow);
+    }
+
+    .btn-secondary-3d {
+      background: #334155;
+      color: #e2e8f0;
+      box-shadow: 0 5px 0 #1e293b;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 14px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-secondary-3d:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #1e293b;
+    }
+
+    /* BARRA DE PROGRESO DE ENERGÍA */
+    .energy-bar-box {
+      margin: 15px 0 20px;
+    }
+
+    .energy-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .energy-track {
+      height: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .energy-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      border-radius: 10px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    /* TARJETA DE PREGUNTA TIPO TRIVIA */
+    .quiz-card {
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 26px 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c084fc;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .q-prompt {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 22px;
+      color: #f1f5f9;
+    }
+
+    /* BOTONES DE OPCIONES DE RESPUESTA (TIPO VIDEOJUEGO) */
+    .options-stack {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .game-option {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .game-option:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .game-option.selected {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: var(--primary);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .opt-key {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      font-weight: 900;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .game-option.selected .opt-key {
+      background: var(--primary);
+      color: #042f20;
+    }
+
+    .opt-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      flex-grow: 1;
+    }
+
+    /* CAMPO DE TEXTO ABIERTO */
+    .game-textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      color: #fff;
+      font-size: 1.05rem;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .game-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .nav-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* PANTALLA DE ÉXITO */
+    .victory-box {
+      background: var(--card-bg);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 35px 24px;
+      text-align: center;
+      box-shadow: 0 0 40px var(--primary-glow);
+      display: none;
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .trophy-icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      display: inline-block;
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+
+    .anon-token-card {
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px dashed var(--primary);
+      color: #34d399;
+      font-size: 1.4rem;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      padding: 14px 20px;
+      border-radius: 14px;
+      margin: 20px 0;
+      display: inline-block;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    /* SECCIÓN DE MURO COMUNITARIO */
+    .feed-container {
+      display: none;
+    }
+
+    .stat-badge-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .stat-chip {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 18px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-chip .num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--cyan);
+    }
+
+    .stat-card-game {
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .bar-pill {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 6px 0 14px;
+    }
+
+    .bar-pill-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 8px;
+      transition: width 0.6s ease;
+    }
+
+    .bar-pill-fill.correct-fill {
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* TARJETA DE RESPUESTA EN EL MURO */
+    .comment-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 4px solid var(--primary);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .comment-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 6px;
+    }
+
+    .comment-text {
+      font-size: 1.05rem;
+      color: #e2e8f0;
+      line-height: 1.45;
+      font-style: italic;
+    }
+
+    .filter-select {
+      width: 100%;
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      outline: none;
+      margin-bottom: 18px;
+    }
+
+    /* LIENZO DE CONFETI */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
 </head>
 <body>
 
-  <header class="masthead">
-    <div class="institution">Institución Educativa El Diamante</div>
-    <h1 class="newspaper-title">LA VOZ DIAMANTINA</h1>
-    <p class="subtitle">Periódico escolar interactivo · Comunidad, lectura y opinión</p>
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- BARRA HUD DE CABECERA -->
+  <header class="game-hud">
+    <div class="hud-container">
+      <div class="brand-pill">
+        <span>💎</span> LA VOZ DIAMANTINA
+      </div>
+      <div class="xp-counter">
+        <span>⚡</span> <span id="xpDisplay">0 XP</span>
+      </div>
+    </div>
   </header>
 
-  <nav class="tabs-bar">
-    <button class="tab-button active" id="tabQuizBtn">✍️ Responder Preguntas</button>
-    <button class="tab-button" id="tabFeedBtn">📰 Muro de Respuestas Públicas</button>
+  <!-- NAVEGACIÓN ARCADE -->
+  <nav class="tabs-wrapper">
+    <button class="tab-btn active" id="tabPlayBtn">🎮 Jugar Misión</button>
+    <button class="tab-btn" id="tabWallBtn">🏆 Muro Diamantino</button>
   </nav>
 
   <main class="container">
 
-    <section id="quizSection">
-      <div class="welcome-box" id="welcomeBox">
-        <h2>¡Participa de manera anónima!</h2>
-        <p>Pon a prueba tus conocimientos sobre nuestro periódico y comparte tus ideas. No te pediremos nombres, correos ni datos personales.</p>
-        <button class="btn-start" id="btnStart">COMENZAR AHORA</button>
+    <!-- ZONA 1: JUEGO INTERACTIVO (PREGUNTA POR PREGUNTA) -->
+    <section id="gameSection">
+      
+      <!-- PANTALLA INICIAL DE BIENVENIDA -->
+      <div class="hero-box" id="startScreen">
+        <span class="hero-badge">Institución Educativa El Diamante</span>
+        <h1 class="hero-title">¡Demuestra tu Poder Diamantino!</h1>
+        <p class="hero-desc">Responde el cuestionario interactivo del periódico escolar, gana puntos de experiencia y comparte tu opinión con 100% de anonimato.</p>
+        <button class="btn-3d" id="btnLaunch">🚀 ¡COMENZAR MISIÓN!</button>
       </div>
 
-      <div class="progress-box" id="progressBox" style="display: none;">
-        <div class="progress-labels">
-          <span id="progressText">Pregunta 0 de 8 respondidas</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-
-      <form id="quizForm" style="display: none;">
-        <div id="errorAlert" class="alert error" style="display: none;"></div>
+      <!-- PANTALLA DE PREGUNTAS INTERACTIVAS (CARD TRIVIA) -->
+      <div id="quizScreen" style="display: none;">
         
-        <div class="category-header">I. Preguntas de Selección Múltiple</div>
-        <div id="multipleContainer"></div>
+        <div class="energy-bar-box">
+          <div class="energy-labels">
+            <span id="stepCounter" style="color: #38bdf8;">Misión 1 de 8</span>
+            <span id="stepPercent" style="color: #34d399;">12%</span>
+          </div>
+          <div class="energy-track">
+            <div class="energy-fill" id="energyFill"></div>
+          </div>
+        </div>
 
-        <div class="category-header">II. Tu Opinión Abierta y Anónima</div>
-        <div id="openContainer"></div>
+        <div class="quiz-card">
+          <div class="q-badge" id="qCategoryBadge">🎯 Opción Múltiple</div>
+          <h2 class="q-prompt" id="qPromptText">Cargando desafío...</h2>
 
-        <button type="submit" class="btn-submit" id="btnSubmit">ENVIAR RESPUESTAS</button>
-      </form>
+          <!-- Opciones para selección múltiple -->
+          <div id="multipleBox" class="options-stack"></div>
 
-      <div class="success-box" id="successBox" style="display: none;">
-        <div class="success-icon">✓</div>
-        <h2>¡Gracias por participar!</h2>
-        <p>Tus respuestas se registraron con total anonimato bajo el código:</p>
-        <div class="anon-badge" id="assignedAnonBadge">Persona anónima #...</div>
-        <br>
-        <button class="btn-start" id="btnGoToFeed">VER QUÉ HAN RESPONDIDO LOS DEMÁS</button>
+          <!-- Cuadro para preguntas abiertas -->
+          <div id="openBox" style="display: none;">
+            <textarea class="game-textarea" id="openTextArea" placeholder="Escribe aquí tu opinión sincera y libre (es anónimo)..."></textarea>
+          </div>
+
+          <div class="nav-controls">
+            <button class="btn-secondary-3d" id="btnPrev" style="display: none; flex: 1;">⬅️ Anterior</button>
+            <button class="btn-3d" id="btnNext" style="flex: 2;">Siguiente ➡️</button>
+          </div>
+        </div>
+
       </div>
+
+      <!-- PANTALLA DE VICTORIA FINAL -->
+      <div class="victory-box" id="victoryScreen">
+        <div class="trophy-icon">🏆</div>
+        <h2 style="font-family: 'Outfit'; font-size: 2.2rem; color: #34d399; margin-bottom: 8px;">¡MISIÓN CUMPLIDA!</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Tus respuestas ya quedaron guardadas de forma 100% segura y anónima bajo tu código de reportero:</p>
+        
+        <div>
+          <div class="anon-token-card" id="myAnonBadge">Persona anónima #...</div>
+        </div>
+
+        <button class="btn-3d" id="btnGoToWall" style="margin-top: 10px;">
+          👀 VER RESPUESTAS DE LOS DEMÁS
+        </button>
+      </div>
+
     </section>
 
-    <section id="feedSection" style="display: none;">
-      <div class="feed-header">
-        <h2>Muro Comunitario de Respuestas</h2>
-        <p>Aquí puedes consultar en vivo las respuestas y opiniones de los demás estudiantes.</p>
-        <div class="total-tag">Total de participantes: <strong id="totalCountDisplay">0</strong></div>
+    <!-- ZONA 2: MURO PÚBLICO Y ESTADÍSTICAS -->
+    <section id="feedSection" class="feed-container">
+      
+      <div class="stat-badge-row">
+        <div class="stat-chip">
+          <span style="font-size: 1.8rem;">👥</span>
+          <div>
+            <div class="num" id="totalStudentsDisplay">0</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Participantes</div>
+          </div>
+        </div>
+        <div class="stat-chip">
+          <span style="font-size: 1.8rem;">🔒</span>
+          <div>
+            <div class="num" style="color: #34d399;">100%</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Anonimato</div>
+          </div>
+        </div>
       </div>
 
-      <h3 class="section-title">📊 Estadísticas de Opción Múltiple</h3>
-      <div id="statsGrid" class="stats-grid"></div>
+      <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 12px; color: #38bdf8;">
+        📊 Resultados en Vivo (Trivia)
+      </h3>
+      <div id="statsContainer"></div>
 
-      <h3 class="section-title" style="margin-top: 40px;">💬 Opiniones Abiertas</h3>
-      <div class="filter-wrapper">
-        <label>Filtrar por pregunta:</label>
-        <select id="feedFilter">
-          <option value="all">Ver todas las respuestas</option>
-          <option value="4">Pregunta 4: ¿Qué sección recuerdas del periódico?</option>
-          <option value="5">Pregunta 5: ¿Cuál es el nombre del periódico escolar?</option>
-          <option value="6">Pregunta 6: ¿Por qué puede ser una herramienta pedagógica?</option>
-          <option value="7">Pregunta 7: ¿Qué habilidades pueden fortalecer?</option>
-          <option value="8">Pregunta 8: ¿Cómo favorece la lectura y la escritura?</option>
-        </select>
-      </div>
+      <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin: 30px 0 12px; color: #c084fc;">
+        💬 Opiniones de la Comunidad
+      </h3>
+      <select class="filter-select" id="wallFilter">
+        <option value="all">🔍 Todas las respuestas abiertas</option>
+        <option value="4">Pregunta 4: ¿Qué sección recuerdas?</option>
+        <option value="5">Pregunta 5: ¿Cuál es el nombre del periódico?</option>
+        <option value="6">Pregunta 6: ¿Por qué es herramienta pedagógica?</option>
+        <option value="7">Pregunta 7: ¿Qué habilidades fortalecen?</option>
+        <option value="8">Pregunta 8: ¿Cómo favorece la lectura y escritura?</option>
+      </select>
 
-      <div id="feedList" class="feed-list"></div>
+      <div id="wallCommentsList"></div>
+
     </section>
 
   </main>
 
-  <footer class="footer">
-    <p>© La Voz Diamantina · Institución Educativa El Diamante</p>
-  </footer>
+  <script>
+    // SISTEMA DE SONIDOS SINTÉTICOS (ARCADE - NO NECESITA DESCARGAR NADA)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
 
-  <script src="app.js"></script>
+    function playSuccessSound() {
+      playBeep(440, 'triangle', 0.1);
+      setTimeout(() => playBeep(554.37, 'triangle', 0.1), 100);
+      setTimeout(() => playBeep(659.25, 'triangle', 0.2), 200);
+    }
+
+    // VARIABLES DE ESTADO
+    let questionsList = [];
+    let currentIdx = 0;
+    let studentAnswers = {};
+    let totalScoreXP = 0;
+    let cachedFeed = [];
+
+    // ELEMENTOS DOM
+    const tabPlayBtn = document.getElementById('tabPlayBtn');
+    const tabWallBtn = document.getElementById('tabWallBtn');
+    const gameSection = document.getElementById('gameSection');
+    const feedSection = document.getElementById('feedSection');
+
+    const startScreen = document.getElementById('startScreen');
+    const quizScreen = document.getElementById('quizScreen');
+    const victoryScreen = document.getElementById('victoryScreen');
+    const btnLaunch = document.getElementById('btnLaunch');
+
+    const stepCounter = document.getElementById('stepCounter');
+    const stepPercent = document.getElementById('stepPercent');
+    const energyFill = document.getElementById('energyFill');
+    const qCategoryBadge = document.getElementById('qCategoryBadge');
+    const qPromptText = document.getElementById('qPromptText');
+    const multipleBox = document.getElementById('multipleBox');
+    const openBox = document.getElementById('openBox');
+    const openTextArea = document.getElementById('openTextArea');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const xpDisplay = document.getElementById('xpDisplay');
+    const myAnonBadge = document.getElementById('myAnonBadge');
+    const btnGoToWall = document.getElementById('btnGoToWall');
+
+    const totalStudentsDisplay = document.getElementById('totalStudentsDisplay');
+    const statsContainer = document.getElementById('statsContainer');
+    const wallFilter = document.getElementById('wallFilter');
+    const wallCommentsList = document.getElementById('wallCommentsList');
+
+    // CONTROL DE PESTAÑAS
+    tabPlayBtn.addEventListener('click', () => {
+      tabPlayBtn.classList.add('active');
+      tabWallBtn.classList.remove('active');
+      gameSection.style.display = 'block';
+      feedSection.style.display = 'none';
+      playBeep(300);
+    });
+
+    tabWallBtn.addEventListener('click', () => {
+      tabWallBtn.classList.add('active');
+      tabPlayBtn.classList.remove('active');
+      gameSection.style.display = 'none';
+      feedSection.style.display = 'block';
+      playBeep(350);
+      loadCommunityFeed();
+    });
+
+    btnGoToWall.addEventListener('click', () => {
+      tabWallBtn.click();
+    });
+
+    // INICIAR MISIÓN
+    btnLaunch.addEventListener('click', async () => {
+      playSuccessSound();
+      startScreen.style.display = 'none';
+      quizScreen.style.display = 'block';
+      await fetchQuestions();
+    });
+
+    // CARGAR PREGUNTAS DEL SERVIDOR
+    async function fetchQuestions() {
+      try {
+        const res = await fetch('/api/questions');
+        questionsList = await res.json();
+        currentIdx = 0;
+        renderCurrentQuestion();
+      } catch (e) {
+        qPromptText.textContent = "Error al conectar con el servidor.";
+      }
+    }
+
+    // MOSTRAR LA PREGUNTA ACTUAL
+    function renderCurrentQuestion() {
+      const q = questionsList[currentIdx];
+      const total = questionsList.length;
+
+      // Actualizar HUD
+      stepCounter.textContent = `Misión ${currentIdx + 1} de ${total}`;
+      const pct = Math.round(((currentIdx + 1) / total) * 100);
+      stepPercent.textContent = `${pct}%`;
+      energyFill.style.width = `${pct}%`;
+
+      // Texto de la pregunta
+      qPromptText.textContent = `${q.order_num}. ${q.prompt}`;
+
+      if (q.type === 'multiple') {
+        qCategoryBadge.textContent = "🎯 Selección Múltiple";
+        qCategoryBadge.style.color = "#c084fc";
+        multipleBox.style.display = 'grid';
+        openBox.style.display = 'none';
+
+        multipleBox.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+
+        q.options.forEach((opt, i) => {
+          const isSelected = studentAnswers[q.id]?.selectedOptionId === opt.id;
+          const optDiv = document.createElement('div');
+          optDiv.className = `game-option ${isSelected ? 'selected' : ''}`;
+          optDiv.innerHTML = `
+            <div class="opt-key">${letters[i] || '•'}</div>
+            <div class="opt-text">${opt.text}</div>
+          `;
+
+          optDiv.addEventListener('click', () => {
+            playBeep(520, 'sine', 0.05);
+            studentAnswers[q.id] = { questionId: q.id, type: 'multiple', selectedOptionId: opt.id };
+            renderCurrentQuestion();
+            addXP(25);
+          });
+
+          multipleBox.appendChild(optDiv);
+        });
+
+      } else {
+        qCategoryBadge.textContent = "✍️ Pregunta Abierta (Anónima)";
+        qCategoryBadge.style.color = "#38bdf8";
+        multipleBox.style.display = 'none';
+        openBox.style.display = 'block';
+
+        openTextArea.value = studentAnswers[q.id]?.openText || '';
+      }
+
+      // Botón Atrás
+      btnPrev.style.display = currentIdx > 0 ? 'block' : 'none';
+
+      // Botón Siguiente / Enviar
+      if (currentIdx === total - 1) {
+        btnNext.textContent = "🚀 ENVIAR TODO";
+      } else {
+        btnNext.textContent = "Siguiente ➡️";
+      }
+    }
+
+    function addXP(amount) {
+      totalScoreXP += amount;
+      xpDisplay.textContent = `${totalScoreXP} XP`;
+    }
+
+    // BOTÓN ANTERIOR
+    btnPrev.addEventListener('click', () => {
+      saveOpenAnswerIfAny();
+      if (currentIdx > 0) {
+        currentIdx--;
+        playBeep(280);
+        renderCurrentQuestion();
+      }
+    });
+
+    // BOTÓN SIGUIENTE / FINALIZAR
+    btnNext.addEventListener('click', () => {
+      saveOpenAnswerIfAny();
+      const q = questionsList[currentIdx];
+
+      // Validación
+      if (q.type === 'multiple' && !studentAnswers[q.id]?.selectedOptionId) {
+        alert("¡Selecciona una opción para avanzar!");
+        playBeep(180, 'sawtooth');
+        return;
+      }
+      if (q.type === 'open' && (!studentAnswers[q.id]?.openText || !studentAnswers[q.id].openText.trim())) {
+        alert("¡Escribe tu opinión antes de continuar!");
+        playBeep(180, 'sawtooth');
+        return;
+      }
+
+      if (currentIdx < questionsList.length - 1) {
+        currentIdx++;
+        playBeep(450);
+        addXP(50);
+        renderCurrentQuestion();
+      } else {
+        // Enviar formulario final
+        submitFinalQuiz();
+      }
+    });
+
+    function saveOpenAnswerIfAny() {
+      const q = questionsList[currentIdx];
+      if (q && q.type === 'open') {
+        studentAnswers[q.id] = { questionId: q.id, type: 'open', openText: openTextArea.value.trim() };
+      }
+    }
+
+    // ENVIAR RESPUESTAS AL SERVIDOR
+    async function submitFinalQuiz() {
+      btnNext.disabled = true;
+      btnNext.textContent = "Enviando...";
+
+      const payload = Object.values(studentAnswers);
+
+      try {
+        const res = await fetch('/api/responses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers: payload })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          quizScreen.style.display = 'none';
+          myAnonBadge.textContent = data.anonymousId;
+          victoryScreen.style.display = 'block';
+          addXP(200);
+          launchConfetti();
+          playSuccessSound();
+        } else {
+          alert("Error: " + data.error);
+          btnNext.disabled = false;
+        }
+      } catch (e) {
+        alert("Error de conexión al enviar.");
+        btnNext.disabled = false;
+      }
+    }
+
+    // CARGAR MURO COMUNITARIO
+    async function loadCommunityFeed() {
+      try {
+        const res = await fetch('/api/public-feed');
+        const data = await res.json();
+
+        totalStudentsDisplay.textContent = data.totalParticipants;
+        renderStats(data.stats);
+        cachedFeed = data.openResponses;
+        renderComments(cachedFeed);
+      } catch (e) {
+        wallCommentsList.innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
+      }
+    }
+
+    function renderStats(stats) {
+      statsContainer.innerHTML = '';
+      stats.forEach(st => {
+        const card = document.createElement('div');
+        card.className = 'stat-card-game';
+        let barRows = '';
+
+        st.options.forEach(opt => {
+          barRows += `
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:700;">
+              <span>${opt.text} ${opt.isCorrect ? '💎 (Correcta)' : ''}</span>
+              <span style="color:#38bdf8;">${opt.percentage}% (${opt.votes})</span>
+            </div>
+            <div class="bar-pill">
+              <div class="bar-pill-fill ${opt.isCorrect ? 'correct-fill' : ''}" style="width: ${opt.percentage}%;"></div>
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <h4 style="font-size:1.05rem; margin-bottom:10px; color:#f8fafc;">${st.orderNum}. ${st.prompt}</h4>
+          <div style="font-size:0.85rem; color:#10b981; font-weight:800; margin-bottom:12px;">
+            Aciertos globales: ${st.percentageCorrect}%
+          </div>
+          ${barRows}
+        `;
+        statsContainer.appendChild(card);
+      });
+    }
+
+    function renderComments(items) {
+      wallCommentsList.innerHTML = '';
+      if (!items || items.length === 0) {
+        wallCommentsList.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:30px;">Aún no hay opiniones registradas. ¡Sé el primero!</p>';
+        return;
+      }
+
+      items.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'comment-card';
+        item.innerHTML = `
+          <div class="comment-top">
+            <span>💎 ${c.anonymous_id}</span>
+            <span style="color:#94a3b8; font-weight:500;">Pregunta ${c.order_num}</span>
+          </div>
+          <p class="comment-text">“${c.open_text}”</p>
+        `;
+        wallCommentsList.appendChild(item);
+      });
+    }
+
+    wallFilter.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'all') {
+        renderComments(cachedFeed);
+      } else {
+        renderComments(cachedFeed.filter(c => String(c.order_num) === val));
+      }
+    });
+
+    // SISTEMA INTEGRADO DE CONFETI EN CANVAS (SIN LIBRERÍAS EXTERNAS)
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#10b981', '#06b6d4', '#f59e0b', '#8b5cf6', '#ec4899'];
+
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 18,
+          vy: (Math.random() - 0.5) * 18 - 4,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          gravity: 0.25,
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 10
+        });
+      }
+
+      function updateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.vRot;
+
+          if (p.y < canvas.height) active = true;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (active) requestAnimationFrame(updateConfetti);
+      }
+      updateConfetti();
+    }
+  </script>
 </body>
 </html>
