@@ -1,0 +1,12 @@
+{
+  "name": "la-voz-diamantina",
+  "version": "1.0.0",
+  "description": "Periódico escolar La Voz Diamantina",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
